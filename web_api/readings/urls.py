@@ -3,7 +3,7 @@ from rest_framework import routers
 from readings import views
 
 router = routers.DefaultRouter()
-router.register(r'readings', views.ReadingViewSet, base_name='users')
+router.register(r'readings', views.ReadingViewSet, base_name='readings')
 
 urlpatterns = [
     path('', include(router.urls))

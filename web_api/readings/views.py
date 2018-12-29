@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.http import HttpResponseNotAllowed
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -10,6 +10,9 @@ from readings.serializers import ReadingSerializer
 class ReadingViewSet(viewsets.ModelViewSet):
     serializer_class = ReadingSerializer
     authentication_classes = (TokenAuthentication,)
+
+    def get_queryset(self):
+        return Reading.objects.all()
 
     def create(self, request, *args, **kwargs):
         reading = Reading.objects.create(
@@ -22,10 +25,14 @@ class ReadingViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         reading = self.get_object()
-        reading.temperature = request.data['temp']
-        reading.modified = datetime.now()
-        reading.save()
 
-        serializer = ReadingSerializer(reading, many=False)
+        if request.user.station.id == reading.station.id:
+            reading.temperature = request.data['temp']
+            reading.modified = datetime.now()
+            reading.save()
 
-        return Response(serializer.data)
+            serializer = ReadingSerializer(reading, many=False)
+
+            return Response(serializer.data)
+        else:
+            return HttpResponseNotAllowed('')
