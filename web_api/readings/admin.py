@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from readings.models import Station, Reading
+
+admin.site.register(Station)
+admin.site.register(Reading)
