@@ -18,6 +18,7 @@ class ReadingViewSet(viewsets.ModelViewSet):
         reading = Reading.objects.create(
             station_id=request.user.station.id,
             temperature=request.data['temp']
+            humidity=request.data['hum']
         )
         serializer = ReadingSerializer(reading)
 
@@ -28,6 +29,7 @@ class ReadingViewSet(viewsets.ModelViewSet):
 
         if request.user.station.id == reading.station.id:
             reading.temperature = request.data['temp']
+            reading.humidity = request.data['hum']
             reading.modified = datetime.now()
             reading.save()
 
