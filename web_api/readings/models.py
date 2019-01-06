@@ -18,6 +18,7 @@ class Reading(models.Model):
     added = models.DateTimeField(default=datetime.now)
     modified = models.DateTimeField(default=datetime.now)
     temperature = models.FloatField()
+    humidity = models.FloatField()
     station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='readings')
 
     def __str__(self):
