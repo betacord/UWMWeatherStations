@@ -1,6 +1,8 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
+#include <DHT11.h>
+#include <stdlib.h>
 
 const int TEMP_SENSOR_ANALOG = 0;
 const int HUMIDITY_SENSOR_ANALOG = 1;
@@ -25,14 +27,14 @@ void loop() {
     StaticJsonBuffer<300> JSONbuffer;
     JsonObject& JSONencoder = JSONbuffer.createObject();
     
-    float temperatureRead = (analogRead(TEMP_SENSOR_ANALOG) / 1023.0) * 5.0;
-    float temperatureC = (temperatureRead * 100.0) - 50.0;
+    char buffer0[10];
+	  char buffer1[10];
+    
+    float Btemp, Bhumi;
+	  dht11.read(Bhumi, Btemp);
 
-    float humidityRead = (analogRead(HUMIDITY_SENSOR_ANALOG) / 1023.0) * 5.0;
-    float humidityPercent = (humidityRead * 100.0) - 50.0;  
-
-    JSONencoder["temp"] = temperatureC;
-    JSONencoder["hum"] = humidityPercent;
+    JSONencoder["temp"] = dtostrf(Btemp, 4, 1, buffer);
+    JSONencoder["hum"] = dtostrf(Bhumi, 4, 1, buffer1);
 
     char JSONmessageBuffer[300];
     JSONencoder.prettyPrintTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
